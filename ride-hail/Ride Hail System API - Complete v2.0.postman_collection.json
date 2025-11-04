@@ -1,0 +1,1024 @@
+{
+	"info": {
+		"_postman_id": "b9a11cef-51c6-4de6-9c35-6b2c0a784283",
+		"name": "Ride Hail System API - Complete v2.0",
+		"description": "Complete API testing for Ride Hail Microservices - Fixed Driver Authentication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "40418263",
+		"_collection_link": "https://solar-astronaut-712546.postman.co/workspace/ridehail~736db734-4427-4efb-bff7-7abf0b760a6c/collection/40418263-b9a11cef-51c6-4de6-9c35-6b2c0a784283?action=share&source=collection_link&creator=40418263"
+	},
+	"item": [
+		{
+			"name": "🔐 Authentication Service - User Endpoints",
+			"item": [
+				{
+					"name": "Register Passenger User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('access_token', response.jwt_access);",
+									"    pm.collectionVariables.set('user_id', response.userId);",
+									"    console.log('Passenger registered. User ID:', response.userId);",
+									"    pm.test('Passenger registration successful', function () {",
+									"        pm.expect(pm.response.code).to.equal(200);",
+									"        pm.expect(response).to.have.property('jwt_access');",
+									"        pm.expect(response).to.have.property('userId');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"johnpassenger\",\n  \"email\": \"john.passenger@example.com\",\n  \"password\": \"pass123\",\n  \"role\": \"PASSENGER\"\n}"
+						},
+						"url": "{{auth_base_url}}/user/register"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Passenger User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('access_token', response.jwt_access);",
+									"    console.log('Passenger logged in. Token updated.');",
+									"    pm.test('Passenger login successful', function () {",
+									"        pm.expect(pm.response.code).to.equal(200);",
+									"        pm.expect(response).to.have.property('jwt_access');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"john.passenger@example.com\",\n  \"password\": \"pass123\"\n}"
+						},
+						"url": "{{auth_base_url}}/user/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Admin User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('admin_token', response.jwt_access);",
+									"    console.log('Admin registered. Token:', response.jwt_access);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"systemadmin\",\n  \"email\": \"admin@ridehail.com\",\n  \"password\": \"admin123\",\n  \"role\": \"ADMIN\"\n}"
+						},
+						"url": "{{auth_base_url}}/user/register"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Admin User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('admin_token', response.jwt_access);",
+									"    console.log('Admin logged in. Token updated.');",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"admin@ridehail.com\",\n  \"password\": \"admin123\"\n}"
+						},
+						"url": "{{auth_base_url}}/user/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Protected User Endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Protected endpoint accessible', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": "{{auth_base_url}}/user/protected"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🚗 Authentication Service - Driver Endpoints (FIXED)",
+			"item": [
+				{
+					"name": "Register Driver - Economy",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('driver_token', response.jwt_access);",
+									"    pm.collectionVariables.set('driver_id', response.userId);",
+									"    console.log('Driver registered. Driver ID:', response.userId);",
+									"    pm.test('Driver registration successful', function () {",
+									"        pm.expect(pm.response.code).to.equal(200);",
+									"        pm.expect(response).to.have.property('jwt_access');",
+									"        pm.expect(response).to.have.property('userId');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"mikedriver\",\n  \"email\": \"mike.driver@example.com\",\n  \"password\": \"driver123\",\n  \"license_number\": \"DL001ABC\",\n  \"vehicle_type\": \"ECONOMY\",\n  \"vehicle_attrs\": {\n    \"make\": \"Toyota\",\n    \"model\": \"Camry\",\n    \"color\": \"White\",\n    \"plate\": \"KZ001ABC\",\n    \"year\": 2020\n  }\n}"
+						},
+						"url": "{{auth_base_url}}/driver/register"
+					},
+					"response": []
+				},
+				{
+					"name": "Register Driver - Premium",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"premiumdriver\",\n  \"email\": \"premium.driver@example.com\",\n  \"password\": \"driver123\",\n  \"license_number\": \"DL003GHI\",\n  \"vehicle_type\": \"PREMIUM\",\n  \"vehicle_attrs\": {\n    \"make\": \"Mercedes\",\n    \"model\": \"E-Class\",\n    \"color\": \"Silver\",\n    \"plate\": \"KZ003GHI\",\n    \"year\": 2021\n  }\n}"
+						},
+						"url": "{{auth_base_url}}/driver/register"
+					},
+					"response": []
+				},
+				{
+					"name": "Login Driver (FIXED - Email based)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('driver_token', response.jwt_access);",
+									"    console.log('Driver logged in successfully');",
+									"    pm.test('Driver login successful', function () {",
+									"        pm.expect(pm.response.code).to.equal(200);",
+									"        pm.expect(response).to.have.property('jwt_access');",
+									"        pm.expect(response.msg).to.include('login successfully');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"mike.driver@example.com\",\n  \"password\": \"driver123\"\n}"
+						},
+						"url": "{{auth_base_url}}/driver/login"
+					},
+					"response": []
+				},
+				{
+					"name": "Test Protected Driver Endpoint",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Driver protected endpoint accessible', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{driver_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": "{{auth_base_url}}/driver/protected"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🎯 Ride Service - Passenger Operations",
+			"item": [
+				{
+					"name": "Create Economy Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 202) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('ride_id', response.ride_id);",
+									"    console.log('Economy ride created. Ride ID:', response.ride_id);",
+									"    pm.test('Ride creation successful', function () {",
+									"        pm.expect(pm.response.code).to.equal(202);",
+									"        pm.expect(response).to.have.property('ride_id');",
+									"        pm.expect(response).to.have.property('ride_number');",
+									"        pm.expect(response.status).to.equal('REQUESTED');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"passenger_id\": \"{{user_id}}\",\n  \"pickup_latitude\": 43.238949,\n  \"pickup_longitude\": 76.889709,\n  \"pickup_address\": \"Almaty Central Park\",\n  \"destination_latitude\": 43.222015,\n  \"destination_longitude\": 76.851511,\n  \"destination_address\": \"Kok-Tobe Hill\",\n  \"ride_type\": \"ECONOMY\"\n}"
+						},
+						"url": "{{base_url}}/rides"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Premium Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Premium ride created', function () {",
+									"    pm.expect(pm.response.code).to.equal(202);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.estimated_fare).to.be.greaterThan(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"passenger_id\": \"{{user_id}}\",\n  \"pickup_latitude\": 43.235000,\n  \"pickup_longitude\": 76.945000,\n  \"pickup_address\": \"Republic Square\",\n  \"destination_latitude\": 43.180000,\n  \"destination_longitude\": 76.890000,\n  \"destination_address\": \"Sairan Resort\",\n  \"ride_type\": \"PREMIUM\"\n}"
+						},
+						"url": "{{base_url}}/rides"
+					},
+					"response": []
+				},
+				{
+					"name": "Create XL Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('XL ride created', function () {",
+									"    pm.expect(pm.response.code).to.equal(202);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.estimated_fare).to.be.greaterThan(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"passenger_id\": \"{{user_id}}\",\n  \"pickup_latitude\": 43.250000,\n  \"pickup_longitude\": 76.950000,\n  \"pickup_address\": \"Tsum Shopping Center\",\n  \"destination_latitude\": 43.300000,\n  \"destination_longitude\": 76.970000,\n  \"destination_address\": \"Alatau District\",\n  \"ride_type\": \"XL\"\n}"
+						},
+						"url": "{{base_url}}/rides"
+					},
+					"response": []
+				},
+				{
+					"name": "Create Airport Ride",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"passenger_id\": \"{{user_id}}\",\n  \"pickup_latitude\": 43.210000,\n  \"pickup_longitude\": 76.880000,\n  \"pickup_address\": \"Mega Alma-Ata Mall\",\n  \"destination_latitude\": 43.352000,\n  \"destination_longitude\": 77.040000,\n  \"destination_address\": \"Almaty Airport\",\n  \"ride_type\": \"ECONOMY\"\n}"
+						},
+						"url": "{{base_url}}/rides"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🧭 Driver Location Service - Driver Operations",
+			"item": [
+				{
+					"name": "Driver Go Online",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 202) {",
+									"    const response = pm.response.json();",
+									"    pm.collectionVariables.set('session_id', response.session_id);",
+									"    console.log('Driver online. Session:', response.session_id);",
+									"    pm.test('Driver online successful', function () {",
+									"        pm.expect(pm.response.code).to.equal(202);",
+									"        pm.expect(response.status).to.equal('AVAILABLE');",
+									"        pm.expect(response).to.have.property('session_id');",
+									"    });",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{driver_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"driver_id\": \"{{driver_id}}\",\n  \"latitude\": 43.238900,\n  \"longitude\": 76.889700\n}"
+						},
+						"url": "{{driver_base_url}}/drivers/{{driver_id}}/online"
+					},
+					"response": []
+				},
+				{
+					"name": "Update Driver Location",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Location update successful', function () {",
+									"    pm.expect(pm.response.code).to.equal(202);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('coordinate_id');",
+									"    pm.expect(response).to.have.property('updated_at');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{driver_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"latitude\": 43.239500,\n  \"longitude\": 76.890200,\n  \"accuracy_meters\": 8.5,\n  \"speed_kmh\": 35.0,\n  \"heading_degrees\": 45.0\n}"
+						},
+						"url": "{{driver_base_url}}/drivers/{{driver_id}}/location"
+					},
+					"response": []
+				},
+				{
+					"name": "Start Ride (Driver picks up passenger)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Ride started successfully', function () {",
+									"    pm.expect(pm.response.code).to.equal(202);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.status).to.equal('BUSY');",
+									"    pm.expect(response.ride_id).to.equal(pm.collectionVariables.get('ride_id'));",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{driver_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ride_id\": \"{{ride_id}}\",\n  \"driver_location\": {\n    \"driver_id\": \"{{driver_id}}\",\n    \"latitude\": 43.239000,\n    \"longitude\": 76.889800\n  }\n}"
+						},
+						"url": "{{driver_base_url}}/drivers/{{driver_id}}/start"
+					},
+					"response": []
+				},
+				{
+					"name": "Complete Ride",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Ride completed successfully', function () {",
+									"    pm.expect(pm.response.code).to.equal(202);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.status).to.equal('AVAILABLE');",
+									"    pm.expect(response.driver_earnings).to.be.greaterThan(0);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{driver_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ride_id\": \"{{ride_id}}\",\n  \"final_location\": {\n    \"latitude\": 43.222015,\n    \"longitude\": 76.851511\n  },\n  \"actual_distance_km\": 5.8,\n  \"actual_duration_minutes\": 22\n}"
+						},
+						"url": "{{driver_base_url}}/drivers/{{driver_id}}/complete"
+					},
+					"response": []
+				},
+				{
+					"name": "Driver Go Offline",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Driver offline successful', function () {",
+									"    pm.expect(pm.response.code).to.equal(202);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response.status).to.equal('OFFLINE');",
+									"    pm.expect(response).to.have.property('session_summary');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{driver_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{}"
+						},
+						"url": "{{driver_base_url}}/drivers/{{driver_id}}/offline"
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "📊 Admin Service - Monitoring & Analytics",
+			"item": [
+				{
+					"name": "Get System Overview",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('System overview retrieved', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('timestamp');",
+									"    pm.expect(response).to.have.property('metrics');",
+									"    pm.expect(response).to.have.property('driver_contribution');",
+									"    pm.expect(response).to.have.property('hotspots');",
+									"    console.log('Active rides:', response.metrics.active_rides);",
+									"    console.log('Available drivers:', response.metrics.available_drivers);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "X-Role",
+								"value": "ADMIN"
+							}
+						],
+						"url": "{{admin_base_url}}/admin/overview"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Active Rides - Page 1",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test('Active rides retrieved', function () {",
+									"    pm.expect(pm.response.code).to.equal(200);",
+									"    const response = pm.response.json();",
+									"    pm.expect(response).to.have.property('rides');",
+									"    pm.expect(response).to.have.property('total_count');",
+									"    pm.expect(response).to.have.property('page');",
+									"    pm.expect(response).to.have.property('page_size');",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "X-Role",
+								"value": "ADMIN"
+							}
+						],
+						"url": {
+							"raw": "{{admin_base_url}}/admin/rides/active?page=1&page_size=10",
+							"host": [
+								"{{admin_base_url}}"
+							],
+							"path": [
+								"admin",
+								"rides",
+								"active"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "page_size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Active Rides - Page 2",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							},
+							{
+								"key": "X-Role",
+								"value": "ADMIN"
+							}
+						],
+						"url": {
+							"raw": "{{admin_base_url}}/admin/rides/active?page=2&page_size=5",
+							"host": [
+								"{{admin_base_url}}"
+							],
+							"path": [
+								"admin",
+								"rides",
+								"active"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "2"
+								},
+								{
+									"key": "page_size",
+									"value": "5"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "🔄 Complete Workflow Test",
+			"item": [
+				{
+					"name": "1. Register New Passenger",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"workflowuser\",\n  \"email\": \"workflow.user@example.com\",\n  \"password\": \"workflow123\",\n  \"role\": \"PASSENGER\"\n}"
+						},
+						"url": "{{auth_base_url}}/user/register"
+					},
+					"response": []
+				},
+				{
+					"name": "2. Register New Driver",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"username\": \"workflowdriver\",\n  \"email\": \"workflow.driver@example.com\",\n  \"password\": \"driver123\",\n  \"license_number\": \"DL987654321\",\n  \"vehicle_type\": \"ECONOMY\",\n  \"vehicle_attrs\": {\n    \"make\": \"Honda\",\n    \"model\": \"Civic\",\n    \"color\": \"Blue\",\n    \"plate\": \"XYZ789\"\n  }\n}"
+						},
+						"url": "{{auth_base_url}}/driver/register"
+					},
+					"response": []
+				},
+				{
+					"name": "3. Create New Ride",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{access_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"passenger_id\": \"{{user_id}}\",\n  \"pickup_latitude\": 43.240000,\n  \"pickup_longitude\": 76.940000,\n  \"pickup_address\": \"Abay Opera House\",\n  \"destination_latitude\": 43.255000,\n  \"destination_longitude\": 76.950000,\n  \"destination_address\": \"Green Bazaar\",\n  \"ride_type\": \"ECONOMY\"\n}"
+						},
+						"url": "{{base_url}}/rides"
+					},
+					"response": []
+				},
+				{
+					"name": "4. Driver Goes Online",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{driver_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"driver_id\": \"{{driver_id}}\",\n  \"latitude\": 43.241000,\n  \"longitude\": 76.941000\n}"
+						},
+						"url": "{{driver_base_url}}/drivers/{{driver_id}}/online"
+					},
+					"response": []
+				},
+				{
+					"name": "5. Complete Full Ride Cycle",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{driver_token}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"ride_id\": \"{{ride_id}}\",\n  \"driver_location\": {\n    \"driver_id\": \"{{driver_id}}\",\n    \"latitude\": 43.240500,\n    \"longitude\": 76.940500\n  }\n}"
+						},
+						"url": "{{driver_base_url}}/drivers/{{driver_id}}/start"
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"console.log('🚀 Starting Ride Hail System API Tests');",
+					"console.log('Authentication Service:', pm.collectionVariables.get('auth_base_url'));",
+					"console.log('Ride Service:', pm.collectionVariables.get('base_url'));",
+					"console.log('Driver Service:', pm.collectionVariables.get('driver_base_url'));",
+					"console.log('Admin Service:', pm.collectionVariables.get('admin_base_url'));"
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					"// Global test for successful responses",
+					"if (pm.response.code >= 400) {",
+					"    console.log('Response Error:', pm.response.code, pm.response.status);",
+					"    console.log('Response Body:', pm.response.text());",
+					"}",
+					"",
+					"pm.test(`Status ${pm.response.code} is successful`, function () {",
+					"    pm.expect(pm.response.code).to.be.oneOf([200, 201, 202, 204]);",
+					"});",
+					"",
+					"pm.test('Response time is acceptable', function () {",
+					"    pm.expect(pm.response.responseTime).to.be.below(5000);",
+					"});"
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:3000",
+			"type": "string"
+		},
+		{
+			"key": "auth_base_url",
+			"value": "http://localhost:3010",
+			"type": "string"
+		},
+		{
+			"key": "admin_base_url",
+			"value": "http://localhost:3004",
+			"type": "string"
+		},
+		{
+			"key": "driver_base_url",
+			"value": "http://localhost:3001",
+			"type": "string"
+		},
+		{
+			"key": "access_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "admin_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "driver_token",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "user_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "driver_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "ride_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "session_id",
+			"value": "",
+			"type": "string"
+		},
+		{
+			"key": "passenger_id",
+			"value": "b0000000-0000-0000-0000-000000000001",
+			"type": "string"
+		},
+		{
+			"key": "test_driver_id",
+			"value": "d0000000-0000-0000-0000-000000000001",
+			"type": "string"
+		},
+		{
+			"key": "test_ride_id",
+			"value": "a0000000-0000-0000-0000-000000000002",
+			"type": "string"
+		}
+	]
+}
